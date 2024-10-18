@@ -11,7 +11,7 @@ import ConnectingPlayers from './ConnectingPlayers';
 import Result from './Result';
 import SelectingIndicator from './SelectingIndicator';
 import { getBettingData, updateBettingData } from '../helper/fetchApi';
-import Winner from './winner';
+import Winner from './Winner.jsx';
 import BetNotFound from './BetNotFound';
 export default function home() {
   const { bettingId, type, game, userId } = useParams();
