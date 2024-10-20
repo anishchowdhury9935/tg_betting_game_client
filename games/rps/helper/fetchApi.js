@@ -1,5 +1,7 @@
+import rps_config from '../rps_config'
 // api.js
-const API_BASE_URL = 'https://nomoonsol.com/api/bettingbasicdata'; // Change the URL based on your server
+const API_BASE_URL = `${rps_config.API_BASE_URL_MAIN || rps_config.API_BASE_URL_DEV}/api/bettingbasicdata`; // Change the URL based on your server
+// const API_BASE_URL = 'https://nomoonsol.com/api/bettingbasicdata'; // Change the URL based on your server
 // Read betting data by bettingId
 export const getBettingData = async (bettingId) => {
     try {
