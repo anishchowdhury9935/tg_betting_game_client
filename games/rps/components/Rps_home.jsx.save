@@ -44,8 +44,7 @@ export default function home() {
     });
     (async () => {
       try {
-        const getBettingDataFetch = await getBettingData(bettingId)
-	//console.log(getBettingDataFetch);
+        const getBettingDataFetch = await getBettingData(betting
         if (getBettingDataFetch?.isBetFound !== undefined && getBettingDataFetch.isBetFound === false) {
           setIsBetFound(false);
           return;

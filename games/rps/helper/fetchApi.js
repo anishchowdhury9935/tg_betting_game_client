@@ -1,5 +1,5 @@
 // api.js
-const API_BASE_URL = 'https://d97f-2405-201-4016-285d-f59a-26d2-b420-73c7.ngrok-free.app/api/bettingbasicdata'; // Change the URL based on your server
+const API_BASE_URL = 'https://nomoonsol.com/api/bettingbasicdata'; // Change the URL based on your server
 // Read betting data by bettingId
 export const getBettingData = async (bettingId) => {
     try {
