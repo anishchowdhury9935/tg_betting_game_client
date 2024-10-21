@@ -1,4 +1,4 @@
-const devModeOn = false;
+const devModeOn = true;
 const config = {
     socket: {
         // hostUrl:'https://nomoonsol.com/',
