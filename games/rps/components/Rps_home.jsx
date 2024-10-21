@@ -101,6 +101,7 @@ export default function home() {
             socket.emit('winnerFound', { winner: saveData.data.winner, shouldProceedRound: false });
             setIsMeWinnerId(saveData.data.winner === userId);
             setShouldProceedRound(false);
+            setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
             return;
           }
         })()
