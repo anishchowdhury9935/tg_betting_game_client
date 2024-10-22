@@ -27,20 +27,31 @@ export default function home() {
   const [isBetFound, setIsBetFound] = useState(true);
   const maxRound = 3;
   useEffect(() => {
-    socket.on('receiveChoice', (data) => {
-      const { choice, userId, winCount } = data;
-      setOpponentDetails({ ...opponentDetails, img: helperMain.getImgAsChoice(choice), choiceName: choice, isSelected: true });
-      // setBasicGameData({ ...basicGameData, opponentWinCount: winCount })
-    })
 
     socket.on('isConnected', ({ bettingId, userIdOwn, isConnected, }) => {
       if (!isConnected) {
         setOwnDetails({ ...ownDetails, choiceName: '', isSelected: false, img: null })
       }
       if (userIdOwn !== userId) {
-        setOpponentDetails({ ...opponentDetails, opponentId: userIdOwn })
+        setOpponentDetails((prev) => {
+          return { ...prev, opponentId: userIdOwn }
+        })
+        console.log(opponentDetails, userIdOwn)
       }
       setIsSecondPlayerConnected(isConnected)
+    });
+
+  }, [opponentDetails])
+
+
+
+  useMemo(() => {
+    joinRoom({ bettingId, type, game, userIdOwn: userId });
+    socketEvents.isConnected({ bettingId, userIdOwn: userId });
+    socket.on('receiveChoice', (data) => {
+      const { choice, userId, winCount } = data;
+      setOpponentDetails({ ...opponentDetails, img: helperMain.getImgAsChoice(choice), choiceName: choice, isSelected: true });
+      // setBasicGameData({ ...basicGameData, opponentWinCount: winCount })
     });
     (async () => {
       try {
@@ -57,52 +68,47 @@ export default function home() {
           return;
         }
         const findOwn = getBettingDataFetch?.data?.playerRoundWin?.filter((data) => {
-          return data.userId === userId
+          return data.userId === userId;
         })
         const findOpponent = getBettingDataFetch?.data?.playerRoundWin?.filter((data) => {
-          return data.userId !== userId
+          return data.userId !== userId;
         })
-        setBasicGameData({ ...basicGameData, round: getBettingDataFetch?.data?.roundNumber, ownWinCount: findOwn[0].winCount, opponentWinCount: findOpponent[0].winCount })
+        setBasicGameData({ ...basicGameData, round: getBettingDataFetch.data?.roundNumber ? getBettingDataFetch?.data?.roundNumber : 1, ownWinCount: findOwn ? findOwn[0].winCount : 0, opponentWinCount: findOpponent ? findOpponent[0].winCount : 0 })
       } catch (error) {
         console.log(error)
       }
     })()
+    // socket.on('winnerFound', (data) => {
+    //   const { winner, shouldProceedRound } = data;
+    //   setIsMeWinnerId(false)
+    //   setShouldProceedRound(shouldProceedRound)
+    //   setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
+    // })
   }, [])
-
-
-
-  useMemo(() => {
-    joinRoom({ bettingId, type, game, userIdOwn: userId });
-    socketEvents.isConnected({ bettingId, userIdOwn: userId });
-    socket.on('winnerFound', (data) => {
-      const { winner, shouldProceedRound } = data;
-      setIsMeWinnerId(false)
-      setShouldProceedRound(shouldProceedRound)
-      setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
-    })
-  }, [])
-
 
 
 
   useEffect(() => {
     if (opponentDetails.isSelected && ownDetails.isSelected) {
       if (basicGameData.round >= maxRound) {
-        setBasicGameData({ ...basicGameData, waitingComponentText: '🎉 while we the result is declared 🎉', waitingComponentShow: true })
+        setBasicGameData({ ...basicGameData, waitingComponentText: '🎉 while the result is been declared. 🎉', waitingComponentShow: true })
+        setTimeout(() => {
+          setShouldProceedRound(false);
+          setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
+        }, 4000);
       }
       const calculateWin = helperMain.rpsResultCalculate(ownDetails.choiceName, opponentDetails.choiceName)
       if (calculateWin.won === 'you') {
         (async () => {
-          setBasicGameData({ ...basicGameData, waitingComponentText: 'while proceeding next', waitingComponentShow: true })
+          // setBasicGameData({ ...basicGameData, waitingComponentText: 'while proceeding next', waitingComponentShow: true })
           const saveData = await updateBettingData(bettingId, { winnerId: userId });
-          setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
+          // setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
           if (saveData.data.shouldProceedRound !== undefined && !saveData.data.shouldProceedRound) {
-            console.log(saveData.data.winner)
-            socket.emit('winnerFound', { winner: saveData.data.winner, shouldProceedRound: false });
-            setIsMeWinnerId(saveData.data.winner === userId);
-            setShouldProceedRound(false);
-            setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
-            return;
+            // console.log(saveData.data.winner)
+            // socket.emit('winnerFound', { winner: saveData.data.winner, shouldProceedRound: false });
+            // setIsMeWinnerId(saveData.data.winner === userId);
+            // setShouldProceedRound(false);
+            // setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
           }
         })()
       };
@@ -125,16 +131,16 @@ export default function home() {
                 setBasicGameData((prev) => {
                   return { ...prev, round: prev.round + 1 }
                 });
-              }, 5000)
-            }
-            if (calculateResult.won === 'you') {
-              setBasicGameData((prev) => {
-                return { ...prev, ownWinCount: prev.ownWinCount + 1 }
-              });
-            } else {
-              setBasicGameData((prev) => {
-                return { ...prev, opponentWinCount: prev.opponentWinCount + 1 }
-              });
+              }, 4000)
+              if (calculateResult.won === 'you') {
+                setBasicGameData((prev) => {
+                  return { ...prev, ownWinCount: prev.ownWinCount + 1 }
+                });
+              } else {
+                setBasicGameData((prev) => {
+                  return { ...prev, opponentWinCount: prev.opponentWinCount + 1 }
+                });
+              }
             }
             toast(`${calculateResult.won} won this round`, { position: "bottom-center", duration: 3000 });
           }
@@ -149,6 +155,20 @@ export default function home() {
       setComponentShowInDash(<SelectingIndicator props={{ opponentDetails, ownDetails }} />)
     }
   }, [opponentDetails, ownDetails]);
+
+
+  useEffect(() => {
+    if (basicGameData.round >= maxRound) {
+      const result = helperMain.findMatchWinner({ ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
+      setIsMeWinnerId(result.winnerId === 'draw' ? null : result.winnerId === userId);
+      console.log(result, { ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
+      console.log(basicGameData)
+    }
+  }, [basicGameData])
+
+
+
+
   return (
     <div id='root_main_div'>
       {isBetFound ? '' : <BetNotFound props={{ isBetFound }} />}

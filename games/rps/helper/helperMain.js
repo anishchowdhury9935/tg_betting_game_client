@@ -40,6 +40,17 @@ const helperMain = {
         } else {
             return { won: "error", item: null };  // fallback for unexpected inputs
         }
+    },
+    findMatchWinner: (ownIDAndWinCount, opponentIDAndWinCount) => {
+        const { ownId, ownWinCount } = ownIDAndWinCount;
+        const { opponentId, opponentWinCount } = opponentIDAndWinCount;
+        if (ownWinCount === opponentWinCount) {
+            return { winnerId: "draw" }
+        }
+        if (ownWinCount > opponentWinCount) {
+            return { winnerId: ownId }
+        }
+        return { winnerId: opponentId }
     }
 }
 
