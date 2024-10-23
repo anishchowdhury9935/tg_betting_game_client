@@ -91,8 +91,8 @@ export default function home() {
   useEffect(() => {
     if (opponentDetails.isSelected && ownDetails.isSelected) {
       if (basicGameData.round >= maxRound) {
-        setBasicGameData({ ...basicGameData, waitingComponentText: '🎉 while the result is been declared. 🎉', waitingComponentShow: true })
         setTimeout(() => {
+          setBasicGameData({ ...basicGameData, waitingComponentText: '🎉 while the result is been declared. 🎉', waitingComponentShow: true })
           setShouldProceedRound(false);
           setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
         }, 4000);
