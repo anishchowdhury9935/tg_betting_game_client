@@ -103,13 +103,13 @@ export default function home() {
           // setBasicGameData({ ...basicGameData, waitingComponentText: 'while proceeding next', waitingComponentShow: true })
           const saveData = await updateBettingData(bettingId, { winnerId: userId });
           // setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
-          if (saveData.data.shouldProceedRound !== undefined && !saveData.data.shouldProceedRound) {
-            // console.log(saveData.data.winner)
-            // socket.emit('winnerFound', { winner: saveData.data.winner, shouldProceedRound: false });
-            // setIsMeWinnerId(saveData.data.winner === userId);
-            // setShouldProceedRound(false);
-            // setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
-          }
+          // if (saveData.data.shouldProceedRound !== undefined && !saveData.data.shouldProceedRound) {
+          //   console.log(saveData.data.winner)
+          //   socket.emit('winnerFound', { winner: saveData.data.winner, shouldProceedRound: false });
+          //   setIsMeWinnerId(saveData.data.winner === userId);
+          //   setShouldProceedRound(false);
+          //   setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
+          // }
         })()
       };
       (() => {
