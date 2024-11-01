@@ -168,8 +168,10 @@ export default function home() {
       // console.log(basicGameData)
       console.log({ ownWinCount: basicGameData.ownWinCount })
       console.log({ opponentWinCount: basicGameData.opponentWinCount })
+      return;
     }
-  }, [basicGameData, isResultSaved])
+    setIsResultSaved(false)
+  }, [isResultSaved])
 
 
 
