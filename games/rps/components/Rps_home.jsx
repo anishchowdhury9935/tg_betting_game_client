@@ -25,7 +25,6 @@ export default function home() {
   const [shouldProceedRound, setShouldProceedRound] = useState(true);
   const [isMeWinnerId, setIsMeWinnerId] = useState(null);
   const [isBetFound, setIsBetFound] = useState(true);
-  const [shouldShowResult, setShouldShowResult] = useState(false);
   const maxRound = 3;
   useEffect(() => {
 
@@ -91,6 +90,13 @@ export default function home() {
 
   useEffect(() => {
     if (opponentDetails.isSelected && ownDetails.isSelected) {
+      if (basicGameData.round >= maxRound) {
+        setTimeout(() => {
+          setBasicGameData({ ...basicGameData, waitingComponentText: '🎉 while the result is been declared. 🎉', waitingComponentShow: true })
+          setShouldProceedRound(false);
+          setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
+        }, 4000);
+      }
       const calculateWin = helperMain.rpsResultCalculate(ownDetails.choiceName, opponentDetails.choiceName)
       if (calculateWin.won === 'you') {
         (async () => {
@@ -138,14 +144,6 @@ export default function home() {
             }
             toast(`${calculateResult.won} won this round`, { position: "bottom-center", duration: 3000 });
           }
-          if (basicGameData.round >= maxRound) {
-            setTimeout(() => {
-              setBasicGameData({ ...basicGameData, waitingComponentText: '🎉 while the result is been declared. 🎉', waitingComponentShow: true })
-              setShouldProceedRound(false);
-              setShouldShowResult(true);
-              setBasicGameData({ ...basicGameData, waitingComponentText: '', waitingComponentShow: false })
-            }, 4000);
-          }
         }, 1200);
       })()
     }
@@ -160,13 +158,13 @@ export default function home() {
 
 
   useEffect(() => {
-    if (basicGameData.round >= maxRound && shouldShowResult) {
+    if (basicGameData.round >= maxRound) {
       const result = helperMain.findMatchWinner({ ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
       setIsMeWinnerId(result.winnerId === 'draw' ? null : result.winnerId === userId);
       console.log(result, { ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
       console.log(basicGameData)
     }
-  }, [basicGameData, shouldShowResult])
+  }, [basicGameData])
 
 
 
