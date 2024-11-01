@@ -134,10 +134,12 @@ export default function home() {
               }, 4000)
               if (calculateResult.won === 'you') {
                 setBasicGameData((prev) => {
+                  console.log({ ownWinCount: prev.ownWinCount + 1 })
                   return { ...prev, ownWinCount: prev.ownWinCount + 1 }
                 });
               } else {
                 setBasicGameData((prev) => {
+                  console.log({ opponentWinCount: prev.opponentWinCount + 1 })
                   return { ...prev, opponentWinCount: prev.opponentWinCount + 1 }
                 });
               }
@@ -161,8 +163,8 @@ export default function home() {
     if (basicGameData.round >= maxRound) {
       const result = helperMain.findMatchWinner({ ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
       setIsMeWinnerId(result.winnerId === 'draw' ? null : result.winnerId === userId);
-      console.log(result, { ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
-      console.log(basicGameData)
+      // console.log(result, { ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
+      // console.log(basicGameData)
     }
   }, [basicGameData])
 
