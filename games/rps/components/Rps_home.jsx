@@ -134,14 +134,14 @@ export default function home() {
               }, 4000)
               if (calculateResult.won === 'you') {
                 setBasicGameData((prev) => {
-                  console.log({ ownWinCount: prev.ownWinCount + 1 })
                   return { ...prev, ownWinCount: prev.ownWinCount + 1 }
                 });
+                console.log({ ownWinCount: basicGameData.ownWinCount })
               } else {
                 setBasicGameData((prev) => {
-                  console.log({ opponentWinCount: prev.opponentWinCount + 1 })
                   return { ...prev, opponentWinCount: prev.opponentWinCount + 1 }
                 });
+                console.log({ opponentWinCount: basicGameData.opponentWinCount })
               }
             }
             toast(`${calculateResult.won} won this round`, { position: "bottom-center", duration: 3000 });
