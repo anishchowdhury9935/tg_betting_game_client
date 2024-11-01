@@ -25,6 +25,7 @@ export default function home() {
   const [shouldProceedRound, setShouldProceedRound] = useState(true);
   const [isMeWinnerId, setIsMeWinnerId] = useState(null);
   const [isBetFound, setIsBetFound] = useState(true);
+  const [isResultSaved, setIsResultSaved] = useState(false);
   const maxRound = 3;
   useEffect(() => {
 
@@ -134,14 +135,14 @@ export default function home() {
               }, 4000)
               if (calculateResult.won === 'you') {
                 setBasicGameData((prev) => {
+                  setIsResultSaved(true)
                   return { ...prev, ownWinCount: prev.ownWinCount + 1 }
                 });
-                console.log({ ownWinCount: basicGameData.ownWinCount })
               } else {
                 setBasicGameData((prev) => {
+                  setIsResultSaved(true)
                   return { ...prev, opponentWinCount: prev.opponentWinCount + 1 }
                 });
-                console.log({ opponentWinCount: basicGameData.opponentWinCount })
               }
             }
             toast(`${calculateResult.won} won this round`, { position: "bottom-center", duration: 3000 });
@@ -160,13 +161,15 @@ export default function home() {
 
 
   useEffect(() => {
-    if (basicGameData.round >= maxRound) {
+    if (basicGameData.round >= maxRound && isResultSaved) {
       const result = helperMain.findMatchWinner({ ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
       setIsMeWinnerId(result.winnerId === 'draw' ? null : result.winnerId === userId);
       // console.log(result, { ownId: userId, ownWinCount: basicGameData.ownWinCount }, { opponentId: opponentDetails.opponentId, opponentWinCount: basicGameData.opponentWinCount })
       // console.log(basicGameData)
+      console.log({ ownWinCount: basicGameData.ownWinCount })
+      console.log({ opponentWinCount: basicGameData.opponentWinCount })
     }
-  }, [basicGameData])
+  }, [basicGameData, isResultSaved])
 
 
 
